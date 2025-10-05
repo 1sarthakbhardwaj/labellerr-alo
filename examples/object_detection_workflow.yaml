@@ -1,0 +1,43 @@
+name: "autonomous_object_detection"
+description: "YOLO pre-labeling → SAM refinement → Quality validation"
+
+parameters:
+  project_id: "your_project_id_here"
+
+steps:
+  - name: "detect_objects"
+    agent: "yolo_detector"
+    parameters:
+      model: "yolov8x"
+      confidence: 0.5
+      iou_threshold: 0.45
+      classes:
+        - "person"
+        - "car"
+        - "bicycle"
+        - "dog"
+        - "cat"
+  
+  - name: "refine_masks"
+    agent: "sam_segmenter"
+    parameters:
+      use_boxes_from: "detect_objects"
+      model: "vit_h"
+    depends_on:
+      - "detect_objects"
+  
+  - name: "validate_detections"
+    agent: "ensemble_validator"
+    parameters:
+      min_iou: 0.7
+      check_overlap: true
+    depends_on:
+      - "refine_masks"
+  
+  - name: "export_annotations"
+    action: "push_to_labellerr"
+    parameters:
+      project_id: "${project_id}"
+      format: "coco_json"
+    depends_on:
+      - "validate_detections"

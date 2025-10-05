@@ -1,0 +1,44 @@
+name: "autonomous_image_classification"
+description: "Pre-label images → Validate → Select samples for human review"
+
+parameters:
+  project_id: "your_project_id_here"
+  confidence_threshold: 0.8
+  batch_size: 100
+
+steps:
+  - name: "pre_label"
+    agent: "gpt4v_classifier"
+    parameters:
+      confidence_threshold: 0.8
+      classes:
+        - "cat"
+        - "dog"
+        - "bird"
+        - "car"
+        - "person"
+      prompt: "Classify the main object in this image"
+  
+  - name: "validate"
+    agent: "llm_validator"
+    parameters:
+      consistency_check: true
+      min_confidence: 0.7
+    depends_on:
+      - "pre_label"
+  
+  - name: "select_samples"
+    agent: "uncertainty_sampler"
+    parameters:
+      batch_size: 100
+      strategy: "margin"
+    depends_on:
+      - "validate"
+  
+  - name: "push_to_labellerr"
+    action: "push_to_labellerr"
+    parameters:
+      project_id: "${project_id}"
+      format: "coco_json"
+    depends_on:
+      - "select_samples"

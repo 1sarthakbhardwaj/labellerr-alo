@@ -1,0 +1,48 @@
+name: "continuous_active_learning"
+description: "Continuous improvement loop: Train → Predict → Select → Label → Retrain"
+
+parameters:
+  project_id: "your_project_id_here"
+  iterations: 5
+  samples_per_iteration: 200
+
+steps:
+  - name: "pull_labeled_data"
+    action: "pull_from_labellerr"
+    parameters:
+      project_id: "${project_id}"
+      statuses: ["accepted"]
+  
+  - name: "train_model"
+    agent: "model_trainer"
+    parameters:
+      model_type: "classification"
+      epochs: 50
+      batch_size: 32
+    depends_on:
+      - "pull_labeled_data"
+  
+  - name: "predict_on_pool"
+    agent: "model_predictor"
+    parameters:
+      data_source: "unlabeled_pool"
+      batch_size: 64
+    depends_on:
+      - "train_model"
+  
+  - name: "select_informative_samples"
+    agent: "active_learner"
+    parameters:
+      strategy: "uncertainty"
+      n_samples: 200
+      diversity_weight: 0.3
+    depends_on:
+      - "predict_on_pool"
+  
+  - name: "push_for_labeling"
+    action: "push_to_labellerr"
+    parameters:
+      project_id: "${project_id}"
+      format: "json"
+    depends_on:
+      - "select_informative_samples"
