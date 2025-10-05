@@ -2,12 +2,18 @@
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![PyPI version](https://badge.fury.io/py/labellerr-alo.svg)](https://badge.fury.io/py/labellerr-alo)
 [![CrewAI](https://img.shields.io/badge/Powered%20by-CrewAI-orange)](https://github.com/joaomdmoura/crewAI)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 
 **Intelligent, autonomous labeling pipelines powered by AI agents** 🚀
 
+> **An Open Source Initiative** to democratize AI-powered data labeling
+
 ALO is the first truly **agentic** data labeling framework that uses intelligent AI agents built on [CrewAI](https://github.com/joaomdmoura/crewAI) to automatically discover, label, and validate your data - with **zero manual class definition required**.
+
+**🎯 Why ALO?** The [Labellerr SDK](https://github.com/tensormatics/SDKPython) is powerful but requires extensive boilerplate (200+ lines). ALO transforms that into **3 lines of code + YAML config**. [Read more: SDK vs ALO](docs/SDK_VS_ALO.md)
 
 ---
 
@@ -452,12 +458,46 @@ This project is licensed under the **Apache License 2.0** - see the [LICENSE](LI
 
 ---
 
+## 🌐 Open Source Initiative
+
+ALO is more than just a tool - it's a **community-driven initiative** to make AI-powered labeling accessible to everyone:
+
+### **Why Open Source?**
+
+1. **Democratize AI Labeling**
+   - Remove barriers to entry
+   - Share best practices
+   - Collaborative improvement
+
+2. **Improve on SDK Experience**
+   - SDK: 200+ lines of boilerplate
+   - ALO: 3 lines + YAML config
+   - [Read full comparison](docs/SDK_VS_ALO.md)
+
+3. **Community Innovation**
+   - Share custom agents
+   - Contribute workflows
+   - Build together
+
+### **How to Contribute**
+
+- **🌟 Star the repo** - Show your support
+- **🐛 Report bugs** - Help us improve
+- **💡 Suggest features** - Share your ideas
+- **🔧 Submit PRs** - Add agents, fix bugs
+- **📖 Improve docs** - Make it clearer
+- **💬 Join discussions** - Help others
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+---
+
 ## 📞 Support
 
 - 📧 **Email**: support@labellerr.com
 - 💬 **Discussions**: [GitHub Discussions](https://github.com/1sarthakbhardawaj/labellerr-alo/discussions)
 - 🐛 **Issues**: [GitHub Issues](https://github.com/1sarthakbhardawaj/labellerr-alo/issues)
-- 📖 **Docs**: [Full Documentation](https://labellerr-alo.readthedocs.io)
+- 📖 **Docs**: [SDK vs ALO](docs/SDK_VS_ALO.md) | [PyPI Release Guide](docs/RELEASE_TO_PYPI.md)
 
 ---
 

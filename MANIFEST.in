@@ -1,0 +1,20 @@
+# Include documentation
+include README.md
+include LICENSE
+include CONTRIBUTING.md
+include requirements.txt
+
+# Include example workflows
+recursive-include examples *.yaml *.yml *.md
+
+# Include documentation
+recursive-include docs *.md *.rst *.txt
+
+# Exclude development and build files
+exclude .gitignore
+exclude .flake8
+exclude .pre-commit-config.yaml
+recursive-exclude tests *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * .DS_Store
