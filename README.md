@@ -13,6 +13,57 @@
 
 ALO is the first truly **agentic** data labeling framework that uses intelligent AI agents built on [CrewAI](https://github.com/joaomdmoura/crewAI) to automatically discover, label, and validate your data - with **zero manual class definition required**.
 
+**🎯 Why ALO?** The [Labellerr SDK](https://github.com/tensormatics/SDKPython) is powerful but requires extensive boilerplate (200+ lines). ALO transforms that into **3 lines of code + YAML config**. [Read more: SDK vs ALO](docs/SDK_VS_ALO.md)
+
+---
+
+## 🎯 The Vision
+
+### **Our Goal: Complete End-to-End Agentic Labeling**
+
+ALO is designed to be a **comprehensive framework for autonomous labeling pipelines** that eliminates manual work at every step:
+
+```yaml
+# The Complete Vision
+Dataset → Auto-Discovery → Pre-Label → AI Validation → Human Review Routing → Active Learning → Adaptive Retraining → Production
+```
+
+### **What We're Building**
+
+1. **Workflow Orchestration** ✅ - Define multi-step pipelines via YAML/JSON
+2. **Intelligent Discovery** ✅ - Auto-discover classes from data samples
+3. **Foundation Model Integration** ✅ - GPT-4V, Claude, SAM, YOLO, CLIP
+4. **AI Validation** ✅ - LLM-based consistency and quality checks
+5. **Human-in-the-Loop Routing** 🚧 - Smart task routing (high confidence → auto, low → human)
+6. **Active Learning** 🔮 - Select most informative samples for labeling
+7. **Adaptive Retraining** 🔮 - Continuous model improvement as dataset grows
+8. **Monitoring Dashboard** 🔮 - Track pipeline progress and quality metrics
+
+**Legend**: ✅ Implemented | 🚧 In Progress | 🔮 Planned
+
+### **Current State: v0.2.0 - Intelligent Discovery Release**
+
+**What's Ready Today:**
+- ✅ Complete workflow orchestration engine
+- ✅ Automatic object class discovery (5% sampling)
+- ✅ Multi-model support (OpenAI, Anthropic, Roboflow, HuggingFace)
+- ✅ AI-powered validation agents
+- ✅ Labellerr SDK integration
+- ✅ CrewAI modular agent architecture
+
+**Coming Next (v0.3.0):**
+- 🚧 Active learning agents (uncertainty, diversity sampling)
+- 🚧 Human review routing with confidence thresholds
+- 🚧 Terminal-based monitoring dashboard
+
+**Future Releases (v0.4.0+):**
+- 🔮 Adaptive retraining workflows
+- 🔮 More foundation models (SAM, CLIP, LLaVA)
+- 🔮 Web dashboard with real-time metrics
+- 🔮 Multi-modal support (video, 3D)
+
+> **Note**: We're at ~70% of the complete vision with strong foundations. [See detailed assessment](docs/CURRENT_STATE_ASSESSMENT.md)
+
 ---
 
 ## 🌟 What Makes ALO Different?
@@ -403,27 +454,71 @@ labellerr-alo/
 
 ## 🗓️ Roadmap
 
-### **✅ Completed (v0.1.0)**
-- [x] Core workflow orchestrator
-- [x] Labellerr SDK integration
-- [x] CrewAI agent framework
-- [x] Intelligent sampling agent
-- [x] Object discovery agent
-- [x] LLM validation agents
-- [x] Multi-model support
+### **✅ v0.1.0 - Foundation (Released)**
+- [x] Core workflow orchestrator with YAML configs
+- [x] Labellerr SDK integration (push/pull data)
+- [x] Basic project structure and documentation
+- [x] Example workflow templates
 
-### **🚧 In Progress (v0.2.0)**
-- [ ] Active learning agents
-- [ ] More foundation model integrations
-- [ ] Web dashboard for monitoring
+### **✅ v0.2.0 - Intelligent Discovery (Current Release)**
+- [x] CrewAI agent framework integration
+- [x] Intelligent sampling agent (5% dataset analysis)
+- [x] **Object discovery agent** (auto-detect classes)
+- [x] LLM validation agents (Claude, GPT-4)
+- [x] Multi-model support (OpenAI, Anthropic, Roboflow, HuggingFace)
+- [x] Comprehensive documentation (SDK vs ALO, PyPI guide)
+
+### **🚧 v0.3.0 - Active Learning (In Progress) - Target: Feb 2025**
+- [ ] **Active learning agents** (uncertainty, diversity, margin sampling)
+- [ ] **Human review routing** (auto vs manual based on confidence)
+- [ ] **Terminal monitoring dashboard** (progress tracking)
+- [ ] Confidence threshold management
+- [ ] Sample selection strategies
 - [ ] Example notebooks and tutorials
 
-### **🔮 Future (v0.3.0+)**
+### **🔮 v0.4.0 - Adaptive Retraining (Planned) - Target: Mar 2025**
+- [ ] **Adaptive retraining workflows** (train → predict → select → retrain)
+- [ ] Model training orchestration
+- [ ] Performance tracking over iterations
+- [ ] More pre-labeling agents (SAM, CLIP, LLaVA)
+- [ ] Advanced validation strategies
+
+### **🔮 v0.5.0 - Production Ready (Planned) - Target: Apr 2025**
+- [ ] Web dashboard with real-time metrics
+- [ ] Multi-user collaboration features
+- [ ] Cloud deployment templates (AWS, GCP, Azure)
+- [ ] API server mode
+- [ ] Production deployment guides
+
+### **🔮 v1.0.0 - Complete Vision (Planned) - Target: Q2 2025**
 - [ ] Video labeling pipelines
 - [ ] 3D point cloud support
-- [ ] Multi-modal fusion (vision + language)
+- [ ] Multi-modal fusion (vision + language + audio)
 - [ ] Automated hyperparameter tuning
-- [ ] Cloud deployment options
+- [ ] Enterprise features (SSO, audit logs)
+
+---
+
+### **🎯 Focus for Next Release (v0.3.0)**
+
+The **critical missing piece** is active learning. This is what will complete the "agentic" nature:
+
+```yaml
+# Coming in v0.3.0
+steps:
+  - name: "select_uncertain_samples"
+    agent: "uncertainty_sampler"
+    parameters:
+      strategy: "least_confident"
+      batch_size: 100
+  
+  - name: "route_to_humans"
+    action: "smart_routing"
+    parameters:
+      high_confidence: "auto_accept"
+      low_confidence: "human_review"
+      threshold: 0.85
+```
 
 ---
 
