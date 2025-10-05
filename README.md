@@ -13,8 +13,6 @@
 
 ALO is the first truly **agentic** data labeling framework that uses intelligent AI agents built on [CrewAI](https://github.com/joaomdmoura/crewAI) to automatically discover, label, and validate your data - with **zero manual class definition required**.
 
-**🎯 Why ALO?** The [Labellerr SDK](https://github.com/tensormatics/SDKPython) is powerful but requires extensive boilerplate (200+ lines). ALO transforms that into **3 lines of code + YAML config**. [Read more: SDK vs ALO](docs/SDK_VS_ALO.md)
-
 ---
 
 ## 🎯 The Vision
@@ -27,44 +25,6 @@ ALO is designed to be a **comprehensive framework for autonomous labeling pipeli
 # The Complete Vision
 Dataset → Auto-Discovery → Pre-Label → AI Validation → Human Review Routing → Active Learning → Adaptive Retraining → Production
 ```
-
-### **What We're Building**
-
-1. **Workflow Orchestration** ✅ - Define multi-step pipelines via YAML/JSON
-2. **Intelligent Discovery** ✅ - Auto-discover classes from data samples
-3. **Foundation Model Integration** ✅ - GPT-4V, Claude, SAM, YOLO, CLIP
-4. **AI Validation** ✅ - LLM-based consistency and quality checks
-5. **Human-in-the-Loop Routing** 🚧 - Smart task routing (high confidence → auto, low → human)
-6. **Active Learning** 🔮 - Select most informative samples for labeling
-7. **Adaptive Retraining** 🔮 - Continuous model improvement as dataset grows
-8. **Monitoring Dashboard** 🔮 - Track pipeline progress and quality metrics
-
-**Legend**: ✅ Implemented | 🚧 In Progress | 🔮 Planned
-
-### **Current State: v0.2.0 - Intelligent Discovery Release**
-
-**What's Ready Today:**
-- ✅ Complete workflow orchestration engine
-- ✅ Automatic object class discovery (5% sampling)
-- ✅ Multi-model support (OpenAI, Anthropic, Roboflow, HuggingFace)
-- ✅ AI-powered validation agents
-- ✅ Labellerr SDK integration
-- ✅ CrewAI modular agent architecture
-
-**Coming Next (v0.3.0):**
-- 🚧 Active learning agents (uncertainty, diversity sampling)
-- 🚧 Human review routing with confidence thresholds
-- 🚧 Terminal-based monitoring dashboard
-
-**Future Releases (v0.4.0+):**
-- 🔮 Adaptive retraining workflows
-- 🔮 More foundation models (SAM, CLIP, LLaVA)
-- 🔮 Web dashboard with real-time metrics
-- 🔮 Multi-modal support (video, 3D)
-
-> **Note**: We're at ~70% of the complete vision with strong foundations. [See detailed assessment](docs/CURRENT_STATE_ASSESSMENT.md)
-
----
 
 ## 🌟 What Makes ALO Different?
 
