@@ -38,33 +38,33 @@ steps:
 
 ---
 
-## 🎯 Core Capabilities
+## Core Capabilities
 
-### **1. 🧠 Intelligent Object Discovery**
+### **1. Intelligent Object Discovery**
 - **Automatic class detection** - Analyzes 5% of your dataset to discover all object classes
 - **Smart sampling** - Uses diverse sampling strategies for representative samples
 - **Cost-optimized** - Only uses expensive models (GPT-4V) on samples, not full dataset
 - **Zero manual work** - No need to manually list classes!
 
-### **2. 🤖 CrewAI-Powered Agents**
+### **2. CrewAI-Powered Agents**
 - **Modular architecture** - Each agent is a specialized CrewAI agent
 - **Multi-agent collaboration** - Agents work together seamlessly
 - **Extensible** - Easy to add custom agents
 - **Production-ready** - Built on battle-tested CrewAI framework
 
-### **3. 🔗 Multi-Model Support**
+### **3. Multi-Model Support**
 - **API-based models** - OpenAI GPT-4V, Anthropic Claude, etc.
 - **Hosted models** - Roboflow, HuggingFace, Replicate
 - **Custom endpoints** - Your own API endpoints
 - **Local models** - PyTorch, TensorFlow models
 
-### **4. ✅ AI-Powered Validation**
+### **4. AI-Powered Validation**
 - **LLM validators** - Use Claude/GPT to validate predictions
 - **Ensemble validation** - Multiple validation strategies
 - **Consistency checks** - Detect conflicts and errors
 - **Quality metrics** - Track annotation quality
 
-### **5. 📊 Workflow Orchestration**
+### **5. Workflow Orchestration**
 - **YAML-based configs** - Simple, declarative pipelines
 - **Dependency management** - Auto-executes steps in correct order
 - **Data flow** - Automatic data passing between agents
