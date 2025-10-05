@@ -2,24 +2,69 @@
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![CrewAI](https://img.shields.io/badge/Powered%20by-CrewAI-orange)](https://github.com/joaomdmoura/crewAI)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-**Autonomous labeling pipelines powered by AI agents** 🚀
+**Intelligent, autonomous labeling pipelines powered by AI agents** 🚀
 
-ALO is an open-source framework for orchestrating end-to-end data labeling workflows using autonomous AI agents. It seamlessly integrates with [Labellerr](https://labellerr.com) to automate pre-labeling, validation, and active learning cycles.
+ALO is the first truly **agentic** data labeling framework that uses intelligent AI agents built on [CrewAI](https://github.com/joaomdmoura/crewAI) to automatically discover, label, and validate your data - with **zero manual class definition required**.
 
 ---
 
-## 🌟 Features
+## 🌟 What Makes ALO Different?
 
-- **🔄 Workflow Orchestration** - Define multi-step labeling pipelines via YAML/JSON configurations
-- **🤖 Foundation Model Integration** - Pre-label with GPT-4V, SAM, YOLO, CLIP, and more
-- **✅ AI-Powered Validation** - LLM-based consistency checks and quality assessment
-- **🎯 Active Learning** - Intelligent sample selection for maximum model improvement
-- **🔗 Labellerr Integration** - Direct SDK integration for seamless data exchange
-- **📊 Monitoring Dashboard** - Track pipeline progress and quality metrics
-- **🔌 Plugin Architecture** - Easily extend with custom agents and validators
-- **⚡ Production Ready** - Async operations, batch processing, and error handling
+### **❌ Traditional Approach**:
+```python
+# You manually define classes
+classes = ["cat", "dog", "bird", "car", "person"]  # 😫 How do you know what's in your data?
+model.predict(images, classes=classes)
+```
+
+### **✅ ALO Agentic Approach**:
+```yaml
+# ALO automatically discovers what's in your data!
+steps:
+  - name: "discover_objects"
+    agent: "object_discoverer"
+    parameters:
+      sample_percentage: 0.05  # Analyze 5% of dataset
+      min_samples: 2           # Minimum 2 images
+      # Classes auto-discovered! 🎉
+```
+
+---
+
+## 🎯 Core Capabilities
+
+### **1. 🧠 Intelligent Object Discovery**
+- **Automatic class detection** - Analyzes 5% of your dataset to discover all object classes
+- **Smart sampling** - Uses diverse sampling strategies for representative samples
+- **Cost-optimized** - Only uses expensive models (GPT-4V) on samples, not full dataset
+- **Zero manual work** - No need to manually list classes!
+
+### **2. 🤖 CrewAI-Powered Agents**
+- **Modular architecture** - Each agent is a specialized CrewAI agent
+- **Multi-agent collaboration** - Agents work together seamlessly
+- **Extensible** - Easy to add custom agents
+- **Production-ready** - Built on battle-tested CrewAI framework
+
+### **3. 🔗 Multi-Model Support**
+- **API-based models** - OpenAI GPT-4V, Anthropic Claude, etc.
+- **Hosted models** - Roboflow, HuggingFace, Replicate
+- **Custom endpoints** - Your own API endpoints
+- **Local models** - PyTorch, TensorFlow models
+
+### **4. ✅ AI-Powered Validation**
+- **LLM validators** - Use Claude/GPT to validate predictions
+- **Ensemble validation** - Multiple validation strategies
+- **Consistency checks** - Detect conflicts and errors
+- **Quality metrics** - Track annotation quality
+
+### **5. 📊 Workflow Orchestration**
+- **YAML-based configs** - Simple, declarative pipelines
+- **Dependency management** - Auto-executes steps in correct order
+- **Data flow** - Automatic data passing between agents
+- **Error recovery** - Built-in retry and error handling
 
 ---
 
@@ -28,67 +73,106 @@ ALO is an open-source framework for orchestrating end-to-end data labeling workf
 ### Installation
 
 ```bash
+# Install from PyPI
 pip install labellerr-alo
-```
 
-Or install from source:
-
-```bash
-git clone https://github.com/YOUR_USERNAME/labellerr-alo.git
+# Or from source
+git clone https://github.com/1sarthakbhardawaj/labellerr-alo.git
 cd labellerr-alo
 pip install -e .
 ```
 
-### Basic Usage
+### Your First Intelligent Pipeline
+
+**1. Create a workflow YAML** (`intelligent_pipeline.yaml`):
+
+```yaml
+name: "intelligent_discovery_pipeline"
+description: "Auto-discover objects → Label full dataset → Validate → Export"
+
+parameters:
+  dataset_path: "/path/to/your/10000/images"
+  project_id: "labellerr_project_id"
+
+steps:
+  # Step 1: Smart Sampling (5% of dataset)
+  - name: "sample_dataset"
+    agent: "intelligent_sampler"
+    parameters:
+      dataset_path: "${dataset_path}"
+      sample_percentage: 0.05  # Only 500 images!
+      min_samples: 2
+      strategy: "diverse"
+
+  # Step 2: Auto-Discover Classes
+  - name: "discover_objects"
+    agent: "object_discoverer"
+    parameters:
+      model_provider: "openai"
+      api_key: "${OPENAI_API_KEY}"
+      sampled_images: "${sample_dataset.sampled_images}"
+      min_class_frequency: 0.05
+      consolidate_similar: true
+    depends_on: ["sample_dataset"]
+
+  # Step 3: Label Full Dataset (uses discovered classes!)
+  - name: "label_full_dataset"
+    agent: "production_labeler"
+    parameters:
+      model_provider: "roboflow"
+      api_key: "${ROBOFLOW_API_KEY}"
+      classes: "${discover_objects.discovered_classes}"  # Auto-filled!
+      dataset_path: "${dataset_path}"
+    depends_on: ["discover_objects"]
+
+  # Step 4: Validate with AI
+  - name: "validate"
+    agent: "llm_validator"
+    parameters:
+      model_provider: "anthropic"
+      api_key: "${ANTHROPIC_API_KEY}"
+      expected_classes: "${discover_objects.discovered_classes}"
+    depends_on: ["label_full_dataset"]
+
+  # Step 5: Export to Labellerr
+  - name: "export"
+    action: "push_to_labellerr"
+    parameters:
+      project_id: "${project_id}"
+      format: "coco_json"
+    depends_on: ["validate"]
+```
+
+**2. Run the pipeline**:
 
 ```python
 from alo import WorkflowOrchestrator
 from alo.connectors import LabellerrConnector
 
-# Initialize with Labellerr credentials
+# Initialize Labellerr connection
 connector = LabellerrConnector(
     api_key="your_api_key",
-    api_secret="your_api_secret"
+    api_secret="your_api_secret",
+    client_id="your_client_id"
 )
 
-# Load workflow configuration
-orchestrator = WorkflowOrchestrator("workflows/image_classification.yaml")
+# Load and run workflow
+orchestrator = WorkflowOrchestrator("intelligent_pipeline.yaml")
+results = orchestrator.run(connector=connector)
 
-# Run the pipeline
-orchestrator.run(connector=connector)
+# Check discovered classes
+print(f"Discovered classes: {results['discover_objects']['discovered_classes']}")
+print(f"Quality score: {results['validate']['quality_score']}")
 ```
 
-### Example Workflow Configuration
+**3. That's it!** 🎉
 
-```yaml
-name: "autonomous_image_classification"
-description: "Pre-label → Validate → Active Learn → Export"
-
-steps:
-  - name: "pre_label"
-    agent: "gpt4v_classifier"
-    parameters:
-      confidence_threshold: 0.8
-      classes: ["cat", "dog", "bird"]
-  
-  - name: "validate"
-    agent: "llm_validator"
-    parameters:
-      consistency_check: true
-      min_confidence: 0.7
-  
-  - name: "active_learn"
-    agent: "uncertainty_sampler"
-    parameters:
-      batch_size: 100
-      strategy: "margin"
-  
-  - name: "export"
-    action: "push_to_labellerr"
-    parameters:
-      project_id: "your_project_id"
-      format: "coco_json"
-```
+ALO automatically:
+- Sampled 500 images (5%)
+- Discovered all object classes in your dataset
+- Labeled all 10,000 images with discovered classes
+- Validated predictions for quality
+- Exported to Labellerr for human review
 
 ---
 
@@ -96,93 +180,174 @@ steps:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                   Workflow Orchestrator                      │
-│  (Parses configs, manages pipeline execution)               │
+│            ALO Agentic Orchestration Engine                  │
+│    (Powered by CrewAI Multi-Agent Framework)                 │
 └─────────────────┬───────────────────────────────────────────┘
                   │
-       ┌──────────┼──────────┐
-       │          │          │
-┌──────▼────┐ ┌──▼─────┐ ┌─▼────────┐
-│  Agents   │ │Validators│ │Active    │
-│           │ │          │ │Learning  │
-│ • GPT-4V  │ │ • LLM    │ │• Uncertainty│
-│ • SAM     │ │ • Rule   │ │• Diversity │
-│ • YOLO    │ │ • Ensemble│ │• Core-set  │
-└─────┬─────┘ └────┬─────┘ └─────┬────┘
-      │            │             │
-      └────────────┼─────────────┘
-                   │
-           ┌───────▼────────┐
-           │   Labellerr    │
-           │   Connector    │
-           │ (SDK Integration)│
-           └────────────────┘
+       ┌──────────┼──────────┬──────────────┐
+       │          │          │              │
+┌──────▼────┐ ┌──▼─────┐ ┌─▼────────┐ ┌───▼──────┐
+│  Sampling │ │Discovery│ │Validation│ │ Active   │
+│   Agent   │ │ Agent   │ │  Agent   │ │ Learning │
+│           │ │         │ │          │ │  Agent   │
+│ • Diverse │ │• GPT-4V │ │• Claude  │ │• Uncer-  │
+│ • Temporal│ │• Claude │ │• GPT-4   │ │  tainty  │
+│ • Metadata│ │• LLaVA  │ │• Ensemble│ │• Diversity│
+└───────────┘ └─────────┘ └──────────┘ └──────────┘
+       │          │          │              │
+       └──────────┼──────────┴──────────────┘
+                  │
+           ┌──────▼──────┐
+           │  Labellerr  │
+           │  Connector  │
+           │  (SDK)      │
+           └─────────────┘
 ```
-
----
-
-## 📦 Components
-
-### **Orchestrator**
-- Workflow engine that parses configurations and manages execution
-- Handles error recovery and retry logic
-- Supports parallel and sequential step execution
-
-### **Agents**
-Pre-built AI agents for various tasks:
-- **GPT-4V Classifier** - Zero-shot image classification
-- **SAM Segmenter** - Segment Anything Model integration
-- **YOLO Detector** - Object detection with YOLO models
-- **CLIP Embedder** - Generate image embeddings for similarity
-
-### **Validators**
-Quality assurance modules:
-- **LLM Validator** - Check annotation consistency using language models
-- **Rule-based Validator** - Apply domain-specific validation rules
-- **Ensemble Validator** - Combine multiple validation strategies
-
-### **Active Learning**
-Intelligent sample selection strategies:
-- **Uncertainty Sampling** - Select samples with low model confidence
-- **Diversity Sampling** - Maximize dataset diversity
-- **Core-set Selection** - Representative sample selection
-
-### **Labellerr Connector**
-Seamless integration with Labellerr platform:
-- Push pre-annotations to projects
-- Pull validated annotations for training
-- Create and manage labeling projects
-- Export annotations in multiple formats
 
 ---
 
 ## 🎯 Use Cases
 
-### **1. Bootstrapping Datasets for New Models**
-Start with zero labels → Use foundation models to pre-label → Human review → Export training data
+### **1. Bootstrapping New Datasets**
+```yaml
+# Start with zero labels
+# ALO discovers classes + labels everything
+# Export to Labellerr for review
+```
 
-### **2. Continuous Model Improvement**
-Deploy model → Collect edge cases → Auto-label → Validate → Retrain → Deploy
+### **2. Unknown Dataset Analysis**
+```yaml
+# You have images, no idea what's in them
+# ALO analyzes samples and tells you!
+# Then labels the full dataset
+```
 
-### **3. Multi-Modal Labeling**
-Combine vision + language models for complex annotation tasks (e.g., image captioning, VQA)
+### **3. Continuous Model Improvement**
+```yaml
+# Pull labeled data → Train → Predict → Select → Label
+# Continuous active learning loop
+```
 
-### **4. Quality Assurance Pipelines**
-Automated consistency checks → Flag inconsistencies → Route to expert review
-
-### **5. Active Learning Cycles**
-Smart sample selection → Efficient labeling → Maximum model improvement per annotation
+### **4. Multi-Modal Labeling**
+```yaml
+# Combine GPT-4V + YOLO + SAM
+# Vision-language-segmentation pipeline
+```
 
 ---
 
-## 📖 Documentation
+## 📊 Agent Types
 
-- [**Installation Guide**](docs/installation.md)
-- [**Workflow Configuration**](docs/workflows.md)
-- [**Agent Reference**](docs/agents.md)
-- [**Labellerr Integration**](docs/labellerr-integration.md)
-- [**API Documentation**](docs/api.md)
-- [**Examples & Tutorials**](examples/)
+### **Sampling Agents**
+- `IntelligentSamplerAgent` - Smart dataset sampling with diversity strategies
+
+### **Discovery Agents**
+- `ObjectDiscoveryAgent` - Auto-discover object classes using vision models
+
+### **Validation Agents**
+- `LLMValidatorAgent` - Validate with GPT-4/Claude
+- `EnsembleValidatorAgent` - Multi-strategy validation
+
+### **Active Learning Agents** (Coming Soon)
+- `UncertaintySamplerAgent` - Uncertainty-based selection
+- `DiversitySamplerAgent` - Maximize dataset diversity
+
+---
+
+## 🔧 Supported Model Providers
+
+### **Vision Models**
+| Provider | Models | Use Case |
+|----------|--------|----------|
+| OpenAI | GPT-4V, GPT-4-Turbo | Discovery, Classification |
+| Anthropic | Claude 3.5 Sonnet | Validation, Analysis |
+| Roboflow | YOLO, SAM | Production Labeling |
+| HuggingFace | Open Source Models | Custom Pipelines |
+
+### **Configuration Example**:
+```yaml
+# OpenAI GPT-4V
+agent: "object_discoverer"
+parameters:
+  model_provider: "openai"
+  api_key: "${OPENAI_API_KEY}"
+  model: "gpt-4-vision-preview"
+
+# Anthropic Claude
+agent: "llm_validator"
+parameters:
+  model_provider: "anthropic"
+  api_key: "${ANTHROPIC_API_KEY}"
+  model: "claude-3-5-sonnet-20241022"
+
+# Roboflow Hosted YOLO
+agent: "production_labeler"
+parameters:
+  model_provider: "roboflow"
+  api_key: "${ROBOFLOW_API_KEY}"
+  model: "yolov8x-world"
+```
+
+---
+
+## 🎪 Real-World Example
+
+### **Scenario**: You have 50,000 wildlife images, no idea what animals are present
+
+**Without ALO**:
+```python
+# 1. Manually review hundreds of images
+# 2. Make a list of animal types
+# 3. Set up labeling project
+# 4. Configure detection model
+# 5. Run predictions
+# 6. Manual validation
+# Time: ~2 days
+```
+
+**With ALO**:
+```yaml
+name: "wildlife_discovery"
+steps:
+  - name: "discover_animals"
+    agent: "object_discoverer"
+    parameters:
+      sample_percentage: 0.05  # 2,500 images
+      min_samples: 2
+  
+  - name: "label_all"
+    agent: "yolo_detector"
+    parameters:
+      classes: "${discover_animals.discovered_classes}"
+  
+  - name: "export"
+    action: "push_to_labellerr"
+```
+
+```python
+orchestrator = WorkflowOrchestrator("wildlife_discovery.yaml")
+results = orchestrator.run(connector)
+
+# Discovered: ["elephant", "lion", "zebra", "giraffe", "buffalo", ...]
+# Labeled: 50,000 images
+# Time: ~2 hours
+```
+
+---
+
+## 🆚 Comparison with Alternatives
+
+| Feature | ALO | Roboflow Autodistill | Label Studio | Prodigy |
+|---------|-----|---------------------|--------------|---------|
+| **Auto Class Discovery** | ✅ | ❌ | ❌ | ❌ |
+| **Agentic Architecture** | ✅ (CrewAI) | ❌ | ❌ | ❌ |
+| **Smart Sampling** | ✅ (5% default) | ❌ | ❌ | Limited |
+| **Multi-Model Orchestration** | ✅ | ✅ | Limited | Limited |
+| **YAML Workflows** | ✅ | ❌ (Python) | ❌ | ❌ |
+| **Active Learning** | ✅ | ❌ | Limited | ✅ |
+| **Open Source** | ✅ | ✅ | ✅ | ❌ |
+| **Labellerr Integration** | ✅ | ❌ | ❌ | ❌ |
+| **Cost Optimization** | ✅ | ❌ | ❌ | ❌ |
 
 ---
 
@@ -191,12 +356,12 @@ Smart sample selection → Efficient labeling → Maximum model improvement per 
 ### Setup Development Environment
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/labellerr-alo.git
+git clone https://github.com/1sarthakbhardawaj/labellerr-alo.git
 cd labellerr-alo
 
 # Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # Install in development mode
 pip install -e ".[dev]"
@@ -206,7 +371,7 @@ pytest tests/
 
 # Format code
 black alo/
-flake8 alo/
+isort alo/
 ```
 
 ### Project Structure
@@ -214,75 +379,61 @@ flake8 alo/
 ```
 labellerr-alo/
 ├── alo/
-│   ├── orchestrator/      # Workflow engine
-│   ├── connectors/        # Labellerr SDK integration
-│   ├── agents/           # Pre-labeling agents
-│   ├── validators/       # Validation modules
-│   ├── active_learning/  # Sample selection
-│   └── utils/            # Utilities
-├── examples/             # Example workflows
-├── notebooks/           # Jupyter tutorials
-├── tests/               # Unit and integration tests
-└── docs/                # Documentation
+│   ├── agents/              # CrewAI-powered intelligent agents
+│   │   ├── base_agent.py    # Base agent class
+│   │   ├── sampler_agent.py # Intelligent sampling
+│   │   ├── discovery_agent.py # Object discovery
+│   │   └── validator_agent.py # Validation agents
+│   ├── orchestrator/        # Workflow engine
+│   ├── connectors/          # Labellerr SDK integration
+│   ├── active_learning/     # Active learning strategies
+│   └── utils/               # Utilities
+├── examples/                # Example workflows
+│   ├── intelligent_discovery_workflow.yaml
+│   ├── image_classification_workflow.yaml
+│   └── object_detection_workflow.yaml
+└── tests/                   # Unit and integration tests
 ```
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how you can help:
-
-1. **🐛 Report Bugs** - Open an issue with reproduction steps
-2. **💡 Suggest Features** - Share your ideas in discussions
-3. **📝 Improve Docs** - Help us make documentation clearer
-4. **🔧 Submit PRs** - Fix bugs or add new features
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ---
 
 ## 🗓️ Roadmap
 
-### **Phase 1: MVP (Current)**
-- [x] Core orchestrator engine
-- [x] Basic Labellerr integration
-- [x] GPT-4V and YOLO agents
-- [ ] Simple validation module
-- [ ] Example workflows
+### **✅ Completed (v0.1.0)**
+- [x] Core workflow orchestrator
+- [x] Labellerr SDK integration
+- [x] CrewAI agent framework
+- [x] Intelligent sampling agent
+- [x] Object discovery agent
+- [x] LLM validation agents
+- [x] Multi-model support
 
-### **Phase 2: Enhanced Features**
-- [ ] Active learning module
-- [ ] Advanced LLM validation
-- [ ] Monitoring dashboard
-- [ ] More foundation model agents
-- [ ] Plugin system
+### **🚧 In Progress (v0.2.0)**
+- [ ] Active learning agents
+- [ ] More foundation model integrations
+- [ ] Web dashboard for monitoring
+- [ ] Example notebooks and tutorials
 
-### **Phase 3: Ecosystem**
-- [ ] Community plugins
-- [ ] Industry-specific templates
-- [ ] Integration with other platforms
+### **🔮 Future (v0.3.0+)**
+- [ ] Video labeling pipelines
+- [ ] 3D point cloud support
+- [ ] Multi-modal fusion (vision + language)
+- [ ] Automated hyperparameter tuning
 - [ ] Cloud deployment options
 
 ---
 
-## 📊 Comparison with Similar Tools
+## 🤝 Contributing
 
-| Feature | ALO | Roboflow Autodistill | Label Studio | Prodigy |
-|---------|-----|---------------------|--------------|---------|
-| Open Source | ✅ | ✅ | ✅ | ❌ |
-| Agentic Workflows | ✅ | ❌ | ❌ | ❌ |
-| Foundation Models | ✅ | ✅ | Limited | Limited |
-| Active Learning | ✅ | ❌ | Limited | ✅ |
-| Labellerr Integration | ✅ | ❌ | ❌ | ❌ |
-| YAML Configs | ✅ | Python | Python | Python |
+We welcome contributions! Here's how:
 
----
+1. **Fork the repository**
+2. **Create a feature branch** (`git checkout -b feature/amazing-agent`)
+3. **Add your agent** (following CrewAI patterns)
+4. **Write tests** (`pytest tests/`)
+5. **Submit a Pull Request**
 
-## 🌟 Showcase
-
-**Have you built something cool with ALO?** We'd love to feature your project!
-
-Share your use case in [GitHub Discussions](https://github.com/YOUR_USERNAME/labellerr-alo/discussions) or tag us on social media.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ---
 
@@ -294,18 +445,19 @@ This project is licensed under the **Apache License 2.0** - see the [LICENSE](LI
 
 ## 🙏 Acknowledgments
 
-- Built on top of [Labellerr SDK](https://github.com/tensormatics/SDKPython)
+- Built on [Labellerr SDK](https://github.com/tensormatics/SDKPython)
+- Powered by [CrewAI](https://github.com/joaomdmoura/crewAI)
 - Inspired by [Roboflow's Autodistill](https://github.com/autodistill/autodistill)
-- Thanks to all contributors and the open-source community
+- Thanks to all contributors and the open-source community!
 
 ---
 
 ## 📞 Support
 
 - 📧 **Email**: support@labellerr.com
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/YOUR_USERNAME/labellerr-alo/discussions)
-- 🐛 **Issues**: [GitHub Issues](https://github.com/YOUR_USERNAME/labellerr-alo/issues)
-- 📖 **Docs**: [Documentation](https://labellerr-alo.readthedocs.io)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/1sarthakbhardawaj/labellerr-alo/discussions)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/1sarthakbhardawaj/labellerr-alo/issues)
+- 📖 **Docs**: [Full Documentation](https://labellerr-alo.readthedocs.io)
 
 ---
 
@@ -313,8 +465,38 @@ This project is licensed under the **Apache License 2.0** - see the [LICENSE](LI
 
 **⭐ Star us on GitHub — it motivates us a lot!**
 
-Made with ❤️ by the Labellerr team and open-source contributors
+**Made with ❤️ by the Labellerr team and open-source contributors**
 
 [Website](https://labellerr.com) • [Documentation](https://docs.labellerr.com) • [Twitter](https://twitter.com/labellerr)
 
 </div>
+
+---
+
+## 🎬 Demo
+
+```bash
+# Clone the repo
+git clone https://github.com/1sarthakbhardawaj/labellerr-alo.git
+cd labellerr-alo
+
+# Install dependencies
+pip install -e .
+
+# Set up your API keys
+export OPENAI_API_KEY="your-key"
+export LABELLERR_API_KEY="your-key"
+export LABELLERR_API_SECRET="your-secret"
+
+# Run intelligent discovery on your dataset
+python -m alo.cli run examples/intelligent_discovery_workflow.yaml
+
+# Watch as ALO:
+# 1. Samples 5% of your dataset (cost-effective!)
+# 2. Discovers all object classes automatically
+# 3. Labels your entire dataset
+# 4. Validates with AI
+# 5. Exports to Labellerr
+
+# All in minutes! 🚀
+```

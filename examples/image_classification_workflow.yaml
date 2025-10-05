@@ -1,23 +1,32 @@
 name: "autonomous_image_classification"
-description: "Pre-label images → Validate → Select samples for human review"
+description: "Auto-discover classes → Pre-label images → Validate → Select samples"
 
 parameters:
+  dataset_path: "/path/to/your/images"
   project_id: "your_project_id_here"
   confidence_threshold: 0.8
   batch_size: 100
 
 steps:
+  # NEW: Auto-discover classes from sample
+  - name: "discover_classes"
+    agent: "object_discoverer"
+    parameters:
+      model_provider: "openai"
+      api_key: "${OPENAI_API_KEY}"
+      dataset_path: "${dataset_path}"
+      sample_percentage: 0.05
+      min_samples: 2
+      prompt: "Classify the main object in this image"
+  
   - name: "pre_label"
     agent: "gpt4v_classifier"
     parameters:
       confidence_threshold: 0.8
-      classes:
-        - "cat"
-        - "dog"
-        - "bird"
-        - "car"
-        - "person"
+      classes: "${discover_classes.discovered_classes}"  # Auto-filled!
       prompt: "Classify the main object in this image"
+    depends_on:
+      - "discover_classes"
   
   - name: "validate"
     agent: "llm_validator"

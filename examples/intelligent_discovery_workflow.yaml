@@ -1,0 +1,109 @@
+name: "intelligent_object_discovery_pipeline"
+description: "Automatically discover objects from samples → Label full dataset → Export"
+
+parameters:
+  dataset_path: "/path/to/your/dataset"
+  project_id: "your_project_id"
+  
+  # Discovery configuration
+  discovery_sample_percentage: 0.05  # Sample 5% of dataset
+  discovery_min_samples: 2           # Minimum 2 images
+  discovery_max_samples: 50          # Maximum 50 images (cost control)
+  
+  # API keys (from environment variables)
+  openai_api_key: "${OPENAI_API_KEY}"
+  roboflow_api_key: "${ROBOFLOW_API_KEY}"
+
+steps:
+  # STEP 1: Intelligent Sampling
+  - name: "sample_dataset"
+    agent: "intelligent_sampler"
+    parameters:
+      dataset_path: "${dataset_path}"
+      sample_percentage: "${discovery_sample_percentage}"
+      min_samples: "${discovery_min_samples}"
+      max_samples: "${discovery_max_samples}"
+      strategy: "diverse"  # Ensures diversity in samples
+  
+  # STEP 2: Automatic Object Discovery
+  - name: "discover_objects"
+    agent: "object_discoverer"
+    parameters:
+      # Use OpenAI GPT-4V for discovery
+      model_provider: "openai"
+      api_key: "${openai_api_key}"
+      model: "gpt-4-vision-preview"
+      temperature: 0.2
+      
+      # Input from previous step
+      sampled_images: "${sample_dataset.sampled_images}"
+      
+      # Discovery settings
+      prompt: |
+        Analyze this image carefully and identify ALL distinct objects present.
+        Use simple, common names (e.g., "dog" not "golden retriever").
+        Focus on major objects, ignore tiny background elements.
+        Return only object class names, comma-separated.
+      
+      # Post-processing
+      min_class_frequency: 0.05  # Only keep classes that appear in 5%+ of samples
+      max_classes: 50            # Limit to top 50 classes
+      consolidate_similar: true  # Merge similar classes (e.g., "sedan" → "car")
+    depends_on:
+      - "sample_dataset"
+  
+  # STEP 3: Label Full Dataset
+  - name: "label_full_dataset"
+    agent: "production_labeler"
+    parameters:
+      # Use Roboflow hosted YOLO for production labeling
+      model_provider: "roboflow"
+      api_key: "${roboflow_api_key}"
+      model: "yolov8x-world"  # Open vocabulary model
+      
+      # Use classes discovered in previous step!
+      classes: "${discover_objects.discovered_classes}"
+      
+      # Process full dataset
+      dataset_path: "${dataset_path}"
+      confidence: 0.5
+      batch_size: 32
+      parallel_workers: 4
+    depends_on:
+      - "discover_objects"
+  
+  # STEP 4: Validate Predictions
+  - name: "validate_predictions"
+    agent: "llm_validator"
+    parameters:
+      # Use Claude for validation
+      model_provider: "anthropic"
+      api_key: "${ANTHROPIC_API_KEY}"
+      model: "claude-3-5-sonnet-20241022"
+      
+      # Validation settings
+      predictions: "${label_full_dataset.predictions}"
+      expected_classes: "${discover_objects.discovered_classes}"
+      min_confidence: 0.6
+      consistency_check: true
+      
+      # Sample validation (validate 10% for speed)
+      validation_sample_size: 0.1
+    depends_on:
+      - "label_full_dataset"
+  
+  # STEP 5: Export to Labellerr
+  - name: "export_to_labellerr"
+    action: "push_to_labellerr"
+    parameters:
+      project_id: "${project_id}"
+      format: "coco_json"
+      
+      # Include discovery metadata
+      metadata:
+        discovered_classes: "${discover_objects.discovered_classes}"
+        class_confidence: "${discover_objects.class_confidence}"
+        sample_size: "${sample_dataset.sampling_metadata.sampled_count}"
+        validation_score: "${validate_predictions.quality_score}"
+    depends_on:
+      - "validate_predictions"

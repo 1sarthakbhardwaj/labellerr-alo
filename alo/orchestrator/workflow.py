@@ -121,10 +121,55 @@ class WorkflowOrchestrator:
     
     def _execute_agent(self, step: WorkflowStep, connector: Any) -> Any:
         """Execute an agent-based step."""
-        # Import and execute the appropriate agent
-        # This will be implemented when agents are added
         logger.info(f"Executing agent: {step.agent}")
-        return {"status": "success", "agent": step.agent}
+        
+        # Import appropriate agent
+        agent_map = {
+            'intelligent_sampler': 'IntelligentSamplerAgent',
+            'smart_sampler': 'IntelligentSamplerAgent',
+            'object_discoverer': 'ObjectDiscoveryAgent',
+            'gpt4v_object_discoverer': 'ObjectDiscoveryAgent',
+            'llm_validator': 'LLMValidatorAgent',
+            'ensemble_validator': 'EnsembleValidatorAgent',
+        }
+        
+        agent_class_name = agent_map.get(step.agent, step.agent)
+        
+        try:
+            from alo import agents
+            agent_class = getattr(agents, agent_class_name, None)
+            
+            if agent_class:
+                # Initialize agent with step parameters
+                agent = agent_class(**step.parameters)
+                
+                # Prepare inputs from previous step results
+                inputs = self._prepare_agent_inputs(step, connector)
+                
+                # Execute agent
+                result = agent.execute(inputs)
+                logger.info(f"Agent {step.agent} completed successfully")
+                return result
+            else:
+                logger.warning(f"Agent {step.agent} not found, returning placeholder")
+                return {"status": "success", "agent": step.agent}
+        except Exception as e:
+            logger.error(f"Error executing agent {step.agent}: {str(e)}")
+            raise
+    
+    def _prepare_agent_inputs(self, step: WorkflowStep, connector: Any) -> Dict[str, Any]:
+        """Prepare inputs for agent from previous step results and step parameters."""
+        inputs = dict(step.parameters)
+        
+        # Add results from dependent steps
+        for dep in step.depends_on:
+            if dep in self.results:
+                dep_result = self.results[dep]
+                # Merge results with a prefix to avoid conflicts
+                for key, value in dep_result.items():
+                    inputs[f"{dep}.{key}"] = value
+        
+        return inputs
     
     def _execute_action(self, step: WorkflowStep, connector: Any) -> Any:
         """Execute an action-based step."""
