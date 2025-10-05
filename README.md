@@ -78,7 +78,7 @@ steps:
 
 ```bash
 # Install from PyPI
-pip install labellerr-alo
+pip install labellerr-alo (soon, try from source for now)
 
 # Or from source
 git clone https://github.com/1sarthakbhardawaj/labellerr-alo.git
