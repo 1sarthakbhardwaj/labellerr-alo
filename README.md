@@ -11,20 +11,9 @@
 
 > **An Open Source Initiative** to democratize AI-powered data labeling
 
-ALO is the first truly **agentic** data labeling framework that uses intelligent AI agents built on [CrewAI](https://github.com/joaomdmoura/crewAI) to automatically discover, label, and validate your data - with **zero manual class definition required**.
+ALO is the first truly **agentic** data labeling framework that uses intelligent AI agents to automatically discover, label, and validate your data - with **zero manual class definition required**.
 
 ---
-
-## 🎯 The Vision
-
-### **Our Goal: Complete End-to-End Agentic Labeling**
-
-ALO is designed to be a **comprehensive framework for autonomous labeling pipelines** that eliminates manual work at every step:
-
-```yaml
-# The Complete Vision
-Dataset → Auto-Discovery → Pre-Label → AI Validation → Human Review Routing → Active Learning → Adaptive Retraining → Production
-```
 
 ## 🌟 What Makes ALO Different?
 
