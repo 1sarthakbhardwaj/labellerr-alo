@@ -46,8 +46,8 @@ steps:
 - **Cost-optimized** - Only uses expensive models (GPT-4V) on samples, not full dataset
 - **Zero manual work** - No need to manually list classes!
 
-### **2. CrewAI-Powered Agents**
-- **Modular architecture** - Each agent is a specialized CrewAI agent
+### **2. Agentic Workflow to Avoid Hallucinations**
+- **Modular architecture** - Each agent is a specialized agent
 - **Multi-agent collaboration** - Agents work together seamlessly
 - **Extensible** - Easy to add custom agents
 - **Production-ready** - Built on battle-tested CrewAI framework
