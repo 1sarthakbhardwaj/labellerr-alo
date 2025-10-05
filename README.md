@@ -13,8 +13,6 @@
 
 ALO is the first truly **agentic** data labeling framework that uses intelligent AI agents built on [CrewAI](https://github.com/joaomdmoura/crewAI) to automatically discover, label, and validate your data - with **zero manual class definition required**.
 
-**🎯 Why ALO?** The [Labellerr SDK](https://github.com/tensormatics/SDKPython) is powerful but requires extensive boilerplate (200+ lines). ALO transforms that into **3 lines of code + YAML config**. [Read more: SDK vs ALO](docs/SDK_VS_ALO.md)
-
 ---
 
 ## 🌟 What Makes ALO Different?
