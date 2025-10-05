@@ -468,7 +468,7 @@ labellerr-alo/
 - [x] Multi-model support (OpenAI, Anthropic, Roboflow, HuggingFace)
 - [x] Comprehensive documentation (SDK vs ALO, PyPI guide)
 
-### **🚧 v0.3.0 - Active Learning (In Progress) - Target: Feb 2025**
+### **🚧 v0.3.0 - Active Learning (In Progress) - Target: Feb 2026**
 - [ ] **Active learning agents** (uncertainty, diversity, margin sampling)
 - [ ] **Human review routing** (auto vs manual based on confidence)
 - [ ] **Terminal monitoring dashboard** (progress tracking)
@@ -476,21 +476,21 @@ labellerr-alo/
 - [ ] Sample selection strategies
 - [ ] Example notebooks and tutorials
 
-### **🔮 v0.4.0 - Adaptive Retraining (Planned) - Target: Mar 2025**
+### **🔮 v0.4.0 - Adaptive Retraining (Planned) - Target: Mar 2026**
 - [ ] **Adaptive retraining workflows** (train → predict → select → retrain)
 - [ ] Model training orchestration
 - [ ] Performance tracking over iterations
 - [ ] More pre-labeling agents (SAM, CLIP, LLaVA)
 - [ ] Advanced validation strategies
 
-### **🔮 v0.5.0 - Production Ready (Planned) - Target: Apr 2025**
+### **🔮 v0.5.0 - Production Ready (Planned) - Target: Apr 2026**
 - [ ] Web dashboard with real-time metrics
 - [ ] Multi-user collaboration features
 - [ ] Cloud deployment templates (AWS, GCP, Azure)
 - [ ] API server mode
 - [ ] Production deployment guides
 
-### **🔮 v1.0.0 - Complete Vision (Planned) - Target: Q2 2025**
+### **🔮 v1.0.0 - Complete Vision (Planned) - Target: Q2 2026**
 - [ ] Video labeling pipelines
 - [ ] 3D point cloud support
 - [ ] Multi-modal fusion (vision + language + audio)
@@ -546,7 +546,6 @@ This project is licensed under the **Apache License 2.0** - see the [LICENSE](LI
 
 - Built on [Labellerr SDK](https://github.com/tensormatics/SDKPython)
 - Powered by [CrewAI](https://github.com/joaomdmoura/crewAI)
-- Inspired by [Roboflow's Autodistill](https://github.com/autodistill/autodistill)
 - Thanks to all contributors and the open-source community!
 
 ---
